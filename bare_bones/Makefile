@@ -9,10 +9,17 @@ DIR := $(PREFIX)
 
 kobjects = $(PREFIX)/boot.o \
 	   $(PREFIX)/kernel.o
-
 lscript = ${SRC_DIR}/linker.ld
 
-$(PREFIX)/bbos.bin : $(kobjects) $(lscript)  | $(DIR)
+$(PREFIX)/bbos.iso : $(PREFIX)/bbos.bin
+	@echo Creating grub image
+	rm -rf $(PREFIX)/isodir
+	mkdir -p $(PREFIX)/isodir/boot/grub
+	cp $(PREFIX)/bbos.bin $(PREFIX)/isodir/boot
+	cp $(SRC_DIR)/grub.cfg $(PREFIX)/isodir/boot/grub
+	grub-mkrescue -o $(PREFIX)/bbos.iso $(PREFIX)/isodir
+
+$(PREFIX)/bbos.bin : $(kobjects) $(lscript)
 	$(CC) -T $(lscript) -o $(PREFIX)/bbos.bin $(LDFLAGS) $(kobjects)
 
 $(PREFIX)/kernel.o : $(SRC_DIR)/kernel.c | $(DIR)
