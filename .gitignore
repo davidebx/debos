@@ -53,3 +53,6 @@ dkms.conf
 
 # Kernel binary
 *.bin
+
+# Directories
+bare_bones/bin
